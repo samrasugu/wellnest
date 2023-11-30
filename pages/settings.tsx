@@ -1,9 +1,12 @@
 import { SideBar } from "@/components/SideBar";
 import Head from "next/head";
 import React from "react";
-import PrivateRoute from "./api/auth/privateRoute";
+import PrivateRoute from "../components/privateRoute";
+import { useAuth } from "@/utils/authContext";
 
 export default function Settings() {
+  const { user } = useAuth();
+
   return (
     <PrivateRoute>
       <Head>
@@ -18,20 +21,20 @@ export default function Settings() {
           <div className="flex flex-col w-1/4 gap-4">
             <input
               type="text"
-              placeholder="First Name"
+              placeholder={user?.firstName}
               className="outline-none border form-input shadow px-4 py-2 rounded-lg p-1 placeholder:p-1"
               readOnly
             />
             <input
               type="text"
-              placeholder="Last Name"
+              placeholder={user?.lastName}
               className="outline-none border form-input shadow px-4 py-2 rounded-lg p-1 placeholder:p-1"
               readOnly
             />
 
             <input
               type="text"
-              placeholder="Email"
+              placeholder={user?.email}
               className="outline-none border form-input shadow px-4 py-2 rounded-lg p-1 placeholder:p-1"
               readOnly
             />

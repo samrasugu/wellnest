@@ -1,6 +1,6 @@
 // components/PrivateRoute.js
 import { useRouter } from "next/router";
-import { useAuth } from "../../../utils/authContext";
+import { useAuth } from "../utils/authContext";
 import { useEffect } from "react";
 
 const PrivateRoute = ({ children }) => {
@@ -9,13 +9,12 @@ const PrivateRoute = ({ children }) => {
 
   // Redirect to login page if user is not authenticated
   useEffect(() => {
-    if (!user) {
+    if (user === null) {
       router.replace("/auth/login");
-      // return null;
     }
   }, [user, router]);
 
-  return <>{children}</>;
+  return user ? <>{children}</> : null;
 };
 
 export default PrivateRoute;

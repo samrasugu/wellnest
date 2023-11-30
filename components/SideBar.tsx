@@ -7,7 +7,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import LogoutIcon from "@mui/icons-material/Logout";
-// import { useAuth } from "../context/authContext";
+import { useAuth } from "../utils/authContext";
 
 export const SideBar = () => {
   const linkList = [
@@ -59,10 +59,10 @@ export const SideBar = () => {
   ];
 
   const router = useRouter();
-  //   const { logout } = useAuth();
+    const { logout } = useAuth();
 
   const handleLogout = () => {
-    // logout();
+    logout();
   };
   return (
     <div className="flex flex-col p-4 justify-between fixed w-60 h-screen bg-white border-r-2">

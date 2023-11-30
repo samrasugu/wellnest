@@ -2,27 +2,42 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@/models/user";
 import connectMongo from "@/utils/connectMongo";
 import bcrypt from "bcrypt";
+import { AuthProvider } from "@/utils/authContext";
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const db = await connectMongo();
+    console.log(req.body);
+    const { email, password } = JSON.parse(req.body);
+
+    await connectMongo();
     const user = await User.findOne({
-      email: req.body.email,
+      email: email,
     });
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    console.log("found user");
+    console.log(password);
 
     if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
-    } else if (!(await bcrypt.compare(user.password, hashedPassword))) {
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+
+    if (!isValid) {
+      console.log("Password does not match");
       return res.status(401).json({
-        message: "Password does not match",
+        message: "Incorrect password",
       });
     } else {
       return res.status(200).json({
-        message: "Login successful",
+        message: "success",
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
       });
     }
   } catch (error: any) {

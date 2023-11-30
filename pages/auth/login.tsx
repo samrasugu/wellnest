@@ -4,8 +4,8 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
-// import { useAuth } from "../../context/authContext";
-// import Logo from "../../assets/brand/agrofi_logo_crp.jpg";
+import { useAuth } from "@/utils/authContext";
+import { CircularProgress } from "@mui/material";
 
 export default function Login() {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -13,9 +13,13 @@ export default function Login() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  const [loginError, setLoginError] = React.useState("");
+
+  const [signingIn, setSigningIn] = React.useState(false);
+
   const router = useRouter();
 
-  //   const { login, user } = useAuth();
+  const { login } = useAuth();
 
   const toggleShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -26,15 +30,51 @@ export default function Login() {
     if (!email || !password) {
       return;
     }
-    try {
-      //   await login(email, password);
 
-      // if(user)
-      router.push("/auth/login");
-    } catch (error) {
-      console.log(error);
-      // custom error handling
-    }
+    setSigningIn(true);
+    // await fetch("/api/auth/login", {
+    //   method: "POST",
+    //   body: JSON.stringify({ email, password }),
+    // })
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then(async (data) => {
+    //     console.log(data);
+    //     if (data.message == "success") {
+    //       console.log("User logged in successfully" + data.user);
+    //       const { firstName, lastName, email } = data.user;
+    //       await login({ firstName, lastName, email });
+    //       setLoginError("");
+    //       setSigningIn(false);
+    //       // router.replace("/");
+    //     } else {
+    //       setLoginError(data.message);
+    //       setSigningIn(false);
+    //     }
+    //   });
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "success") {
+        console.log("User logged in successfully", data.user);
+        const { firstName, lastName, email } = data.user;
+        login({ firstName, lastName, email });
+        setLoginError("");
+        setSigningIn(false);
+        // Redirect the user to the desired page after login
+        router.replace("/");
+      } else {
+        setLoginError(data.message);
+        setSigningIn(false);
+      }
+    } catch (error) {}
   };
   return (
     <>
@@ -64,12 +104,19 @@ export default function Login() {
                   {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                 </button>
               </div>
-              <button
-                type="submit"
-                className="bg-sky-500 w-72 md:w-96 py-2 rounded-lg text-white"
-              >
-                Login
-              </button>
+              {signingIn ? (
+                <CircularProgress />
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-sky-500 w-72 md:w-96 py-2 rounded-lg text-white"
+                >
+                  Login
+                </button>
+              )}
+              {loginError && (
+                <p className="text-red-500 text-sm pt-3">{loginError}</p>
+              )}
               <p className="text-gray-500 text-sm pt-3">
                 Don&apos;t have an account?{" "}
                 <Link href="/auth/register">

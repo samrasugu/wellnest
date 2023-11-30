@@ -24,6 +24,11 @@ export default async function register(
 
     return res.status(200).json({
       message: "success",
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
     });
   } catch (error: any) {
     return res.status(500).json({

@@ -1,10 +1,12 @@
 import { SideBar } from "@/components/SideBar";
 import Head from "next/head";
-import React from "react";
+import React, { useEffect } from "react";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import RunningIcon from "@mui/icons-material/Sports";
 import { GridColDef } from "@mui/x-data-grid";
-import PrivateRoute from "./api/auth/privateRoute";
+import PrivateRoute from "../components/privateRoute";
+import { useAuth } from "@/utils/authContext";
+import router from "next/router";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -28,8 +30,16 @@ const rows = [
 ];
 
 export default function Dashboard() {
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/auth/login");
+    }
+  }, [user]);
+
   return (
-    <PrivateRoute>
+    <>
       <Head>
         <title>Home | WellNest</title>
       </Head>
@@ -121,6 +131,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </PrivateRoute>
+    </>
   );
 }

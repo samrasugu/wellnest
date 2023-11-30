@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/connectMongo.js", "pages/api/auth/privateRoute.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/connectMongo.js", "components/privateRoute.js"],
   "exclude": ["node_modules"]
 }

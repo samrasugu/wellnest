@@ -2,7 +2,7 @@ import { SideBar } from "@/components/SideBar";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import PrivateRoute from "./api/auth/privateRoute";
+import PrivateRoute from "../components/privateRoute";
 
 const rows = [
   { _id: 1, title: "Snow", description: "Jon" },
