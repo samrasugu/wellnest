@@ -1,32 +1,33 @@
-import React, { Component } from "react";
+import React from "react";
 import Head from "next/head";
-import Image from "next/image";
-import WarehouseBanner from "../../assets/warehouse-banner.jpg";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
-import Logo from "../../assets/brand/agrofi_logo_no_bg.png";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "next/link";
 import { CircularProgress } from "@mui/material";
-
-interface RegisterState {
-  phoneNumber: string;
-}
 
 interface IformInputs {
   firstName: string;
   lastName: string;
   email: string;
+  password: string;
 }
 
-// export class Register extends React.Component<{}, RegisterState> {
 export default function Register() {
   const [submitted, setSubmitted] = React.useState(false);
 
   const [registrationError, setRegistrationError] = React.useState("");
 
+  const [showPassword, setShowPassword] = React.useState(false);
+
   const router = useRouter();
 
   const [signingUp, setSigningUp] = React.useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   const {
     register,
@@ -39,6 +40,7 @@ export default function Register() {
       firstName: "",
       email: "",
       lastName: "",
+      password: "",
     },
   });
 
@@ -47,7 +49,7 @@ export default function Register() {
 
     setSigningUp(true);
 
-    await fetch("/api/register/registerStore", {
+    await fetch("/api/register/registerUser", {
       method: "POST",
       body: JSON.stringify(data),
     })
@@ -128,6 +130,18 @@ export default function Register() {
                   <p className="text-red-500">Email is required</p>
                 )}
 
+                <div className="flex flex-row justify-between items-center gap-2 md:gap-10">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className="outline-none border md:w-80 w-64 form-input shadow px-4 py-2 rounded-lg placeholder:p-1"
+                    {...register("password", { required: true })}
+                  />
+                  <button type="button" onClick={toggleShowPassword}>
+                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                  </button>
+                </div>
+
                 {registrationError && (
                   <p className="text-red-400">{registrationError}</p>
                 )}
@@ -142,6 +156,15 @@ export default function Register() {
                     Sign up
                   </button>
                 )}
+
+                <p className="text-gray-500 text-sm pt-3">
+                  Already have an account?{" "}
+                  <Link href="/auth/login">
+                    <span className="cursor-pointer underline text-blue-800 font-bold text-sm">
+                      Sign in
+                    </span>
+                  </Link>{" "}
+                </p>
 
                 <p className="text-black text-sm pt-3">
                   By signing up on WellNest you agree to our{" "}

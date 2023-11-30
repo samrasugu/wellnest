@@ -1,10 +1,9 @@
 import React from "react";
-import Image from "next/image";
-import WarehouseBanner from "../../assets/warehouse-banner.jpg";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Link from "next/link";
 // import { useAuth } from "../../context/authContext";
 // import Logo from "../../assets/brand/agrofi_logo_crp.jpg";
 
@@ -28,7 +27,7 @@ export default function Login() {
       //   await login(email, password);
 
       // if(user)
-      router.push("/auth/register");
+      router.push("/auth/login");
     } catch (error) {
       console.log(error);
       // custom error handling
@@ -68,6 +67,14 @@ export default function Login() {
               >
                 Login
               </button>
+              <p className="text-gray-500 text-sm pt-3">
+                Don&apos;t have an account?{" "}
+                <Link href="/auth/login">
+                  <span className="cursor-pointer underline text-blue-800 font-bold text-sm">
+                    Sign up
+                  </span>
+                </Link>{" "}
+              </p>
             </div>
           </form>
         </div>
