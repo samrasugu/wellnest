@@ -49,7 +49,7 @@ export default function Register() {
 
     setSigningUp(true);
 
-    await fetch("/api/register/registerUser", {
+    await fetch("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(data),
     })
@@ -61,6 +61,7 @@ export default function Register() {
         if (data.message == "success") {
           setSigningUp(false);
           setSubmitted(true);
+          setRegistrationError('');
         } else {
           setRegistrationError(data.message);
           setSigningUp(false);
