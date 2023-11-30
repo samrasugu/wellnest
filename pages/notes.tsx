@@ -2,6 +2,7 @@ import { SideBar } from "@/components/SideBar";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
+import PrivateRoute from "./api/auth/privateRoute";
 
 const rows = [
   { _id: 1, title: "Snow", description: "Jon" },
@@ -17,7 +18,7 @@ const rows = [
 
 export default function Notes() {
   return (
-    <>
+    <PrivateRoute>
       <Head>
         <title>Home | WellNest</title>
       </Head>
@@ -53,6 +54,6 @@ export default function Notes() {
           ))}
         </div>
       </div>
-    </>
+    </PrivateRoute>
   );
 }

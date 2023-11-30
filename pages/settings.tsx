@@ -1,10 +1,11 @@
 import { SideBar } from "@/components/SideBar";
 import Head from "next/head";
 import React from "react";
+import PrivateRoute from "./api/auth/privateRoute";
 
 export default function Settings() {
   return (
-    <>
+    <PrivateRoute>
       <Head>
         <title>Home | WellNest</title>
       </Head>
@@ -37,6 +38,6 @@ export default function Settings() {
           </div>
         </div>
       </div>
-    </>
+    </PrivateRoute>
   );
 }

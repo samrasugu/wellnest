@@ -4,6 +4,7 @@ import React from "react";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import RunningIcon from "@mui/icons-material/Sports";
 import { GridColDef } from "@mui/x-data-grid";
+import PrivateRoute from "./api/auth/privateRoute";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -28,7 +29,7 @@ const rows = [
 
 export default function Dashboard() {
   return (
-    <>
+    <PrivateRoute>
       <Head>
         <title>Home | WellNest</title>
       </Head>
@@ -120,6 +121,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </>
+    </PrivateRoute>
   );
 }
