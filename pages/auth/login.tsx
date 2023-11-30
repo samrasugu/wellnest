@@ -23,6 +23,9 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!email || !password) {
+      return;
+    }
     try {
       //   await login(email, password);
 
@@ -46,7 +49,7 @@ export default function Login() {
             <div className="flex flex-col justify-center items-center md:px-20 px-4 py-4 gap-4 md:py-10">
               <input
                 type="email"
-                placeholder="Business Email"
+                placeholder="Email"
                 className="outline-none border md:w-96 w-full form-input shadow px-4 py-2 rounded-lg p-1 placeholder:p-1"
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -69,7 +72,7 @@ export default function Login() {
               </button>
               <p className="text-gray-500 text-sm pt-3">
                 Don&apos;t have an account?{" "}
-                <Link href="/auth/login">
+                <Link href="/auth/register">
                   <span className="cursor-pointer underline text-blue-800 font-bold text-sm">
                     Sign up
                   </span>

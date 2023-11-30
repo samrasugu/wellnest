@@ -35,7 +35,7 @@ export default function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm<IformInputs>({
-    mode: "onBlur",
+    // mode: "onBlur",
     defaultValues: {
       firstName: "",
       email: "",
@@ -141,6 +141,10 @@ export default function Register() {
                     {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                   </button>
                 </div>
+
+                {errors.password && (
+                  <p className="text-red-500">Password is required</p>
+                )}
 
                 {registrationError && (
                   <p className="text-red-400">{registrationError}</p>

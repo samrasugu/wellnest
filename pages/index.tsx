@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Login from "./auth/login";
+import Dashboard from "./dashboard";
 
 export default function Page() {
   return (
@@ -9,7 +10,7 @@ export default function Page() {
         <link rel="icon" href="/favicon.ico" />
         <meta name="description" content="WellNest" />
       </Head>
-      <Login />
+      <Dashboard />
     </>
   );
 }
