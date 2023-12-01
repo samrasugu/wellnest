@@ -1,9 +1,10 @@
 import { SideBar } from "@/components/SideBar";
+import { EntryType } from "@/typing.t";
 import { useAuth } from "@/utils/authContext";
 import { Menu } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Activity() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -15,6 +16,8 @@ export default function Activity() {
   const [entryType, setEntryType] = useState("exercise");
   const [entryDescription, setEntryDescription] = useState("");
 
+  const [entries, setEntries] = useState<EntryType[]>([]);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -24,6 +27,29 @@ export default function Activity() {
   };
 
   const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchEntries = async () => {
+      if (!user) {
+        return;
+      }
+      const response = await fetch("/api/activity/getEntries", {
+        method: "POST",
+        body: JSON.stringify({ userID: user._id }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "success") {
+        console.log("Entries fetched successfully", data.entries);
+        setEntries(data.entries);
+      } else {
+        console.log("Error fetching entries");
+      }
+    };
+
+    fetchEntries();
+  }, [user]);
 
   //   submit entry
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,6 +70,8 @@ export default function Activity() {
 
       if (data.message === "success") {
         console.log("Entry added successfully", data.entry);
+        setEntries((prevEntries) => [...prevEntries, data.entry]);
+
         setIsModalOpen(false);
         setIsSubmitting(false);
         setEntryType("");
@@ -162,14 +190,22 @@ export default function Activity() {
             </div>
           </div>
           {/* entries list */}
-          <div className="flex flex-col gap-4 mt-4 shadow-md p-4 rounded-md">
-            <div className="flex flex-row justify-between">
-              <p className="text-lg font-medium text-black">Title</p>
-            </div>
-            <div className="flex flex-row justify-between">
-              <h1 className="text-sm font-medium text-gray-600">Description</h1>
-            </div>
-          </div>
+          {entries &&
+            entries.map((row, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 mt-4 shadow-md p-4 rounded-md"
+              >
+                <div className="flex flex-row justify-between">
+                  <p className="text-lg font-medium text-black">{row.type}</p>
+                </div>
+                <div className="flex flex-row justify-between">
+                  <h1 className="text-sm font-medium text-gray-600">
+                    {row.description}
+                  </h1>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </>

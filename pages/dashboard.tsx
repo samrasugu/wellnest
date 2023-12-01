@@ -25,17 +25,17 @@ const rows = [
   { id: 9, title: "Roxie", description: "Harvey" },
 ];
 
-type Props = {
-  notes: NoteType[];
-  user: UserType;
-};
+// type Props = {
+//   notes: NoteType[];
+//   user: UserType;
+// };
 
-export default function Dashboard({ notes }: Props) {
+export default function Dashboard() {
   const { user } = useAuth();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [notesList, setNotes] = useState<NoteType[]>(notes);
+  const [notesList, setNotes] = useState<NoteType[]>([]);
 
   useEffect(() => {
     const fetchNotes = async () => {
