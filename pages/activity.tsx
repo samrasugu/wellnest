@@ -1,7 +1,7 @@
 import { SideBar } from "@/components/SideBar";
 import { EntryType } from "@/typing.t";
 import { useAuth } from "@/utils/authContext";
-import { Menu } from "@mui/icons-material";
+import { Edit, Menu } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
@@ -17,6 +17,8 @@ export default function Activity() {
   const [entryDescription, setEntryDescription] = useState("");
 
   const [entries, setEntries] = useState<EntryType[]>([]);
+
+  const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -82,6 +84,28 @@ export default function Activity() {
       }
     } catch (error) {}
   };
+
+  // Function to handle click on an entry
+  const handleEntryClick = (clickedEntry: EntryType) => {
+    setSelectedEntry(clickedEntry);
+    populateModalFields();
+    toggleModal();
+  };
+
+  // Function to populate modal fields with selected entry data
+  const populateModalFields = () => {
+    if (selectedEntry) {
+      setEntryType(selectedEntry.type);
+      setEntryDescription(selectedEntry.description);
+    }
+  };
+
+  // Function to reset modal fields
+  const resetModalFields = () => {
+    setEntryType("exercise");
+    setEntryDescription("");
+  };
+
   return (
     <>
       <Head>
@@ -132,9 +156,14 @@ export default function Activity() {
             <div className="absolute bg-white rounded-md w-[95%] p-4">
               <div className="flex flex-row justify-between items-center gap-5">
                 <h1 className="text-lg font-semibold text-gray-800">
-                  Add Activity Entry
+                  {selectedEntry ? "Edit Activity Entry" : "Add Activity Entry"}
                 </h1>
-                <button onClick={toggleModal}>
+                <button
+                  onClick={() => {
+                    toggleModal();
+                    resetModalFields();
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6 text-gray-800 hover:text-gray-600"
@@ -161,6 +190,7 @@ export default function Activity() {
                   <select
                     className="border-none focus:border-none hover:border-none rounded-md p-2 my-2"
                     onChange={(e) => setEntryType(e.target.value)}
+                    value={entryType}
                   >
                     <option value="exercise">Exercise</option>
                     <option value="meal">Meal</option>
@@ -173,6 +203,7 @@ export default function Activity() {
                     placeholder="Please describe your activity here"
                     className="outline-none placeholder:items-center border w-full form-input shadow px-4 py-2 rounded-lg p-1 placeholder:p-1"
                     onChange={(e) => setEntryDescription(e.target.value)}
+                    value={entryDescription}
                   />
 
                   {isSubmitting ? (
@@ -182,7 +213,7 @@ export default function Activity() {
                       type="submit"
                       className="bg-sky-500 w-full py-2 rounded-lg text-white my-4"
                     >
-                      Submit
+                      {selectedEntry ? "Update" : "Submit"}
                     </button>
                   )}
                 </div>
@@ -194,10 +225,12 @@ export default function Activity() {
             entries.map((row, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-4 mt-4 shadow-md p-4 rounded-md"
+                className="flex flex-col gap-4 mt-4 shadow-md p-4 rounded-md cursor-pointer"
+                onClick={() => handleEntryClick(row)}
               >
                 <div className="flex flex-row justify-between">
                   <p className="text-lg font-medium text-black">{row.type}</p>
+                  <Edit className="text-green-600" />
                 </div>
                 <div className="flex flex-row justify-between">
                   <h1 className="text-sm font-medium text-gray-600">
