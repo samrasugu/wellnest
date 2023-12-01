@@ -113,7 +113,6 @@ export default function Activity() {
               Add Entry
             </button>
           </div>
-          {/* add entry pop up modal */}
           {/* Dark overlay */}
           {isModalOpen && (
             <div
@@ -124,6 +123,7 @@ export default function Activity() {
               }}
             ></div>
           )}
+          {/* add entry pop up modal */}
           <div
             className={`${
               isModalOpen ? "flex" : "hidden"

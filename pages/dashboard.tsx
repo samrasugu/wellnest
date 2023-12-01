@@ -10,25 +10,8 @@ import router from "next/router";
 import { Menu } from "@mui/icons-material";
 import connectMongo from "@/utils/connectMongo";
 import { Note } from "@/models/Notes";
-import { NoteType, UserType } from "@/typing.t";
+import { EntryType, NoteType, UserType } from "@/typing.t";
 import mongoose from "mongoose";
-
-const rows = [
-  { _id: 1, title: "Snow", description: "Jon" },
-  { _id: 2, title: "Lannister", description: "Cersei" },
-  { _id: 3, title: "Lannister", description: "Jaime" },
-  { _id: 4, title: "Stark", description: "Arya" },
-  { _id: 5, title: "Targaryen", description: "Daenerys" },
-  { id: 6, title: "Melisandre", description: null },
-  { id: 7, title: "Clifford", description: "Ferrara" },
-  { id: 8, title: "Frances", description: "Rossini" },
-  { id: 9, title: "Roxie", description: "Harvey" },
-];
-
-// type Props = {
-//   notes: NoteType[];
-//   user: UserType;
-// };
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -36,6 +19,8 @@ export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [notesList, setNotes] = useState<NoteType[]>([]);
+
+  const [entries, setEntries] = useState<EntryType[]>([]);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -58,7 +43,24 @@ export default function Dashboard() {
     };
 
     // fetch entries
-    const fetchEntries = async () => {};
+    const fetchEntries = async () => {
+      if (!user) {
+        return;
+      }
+      const response = await fetch("/api/activity/getEntries", {
+        method: "POST",
+        body: JSON.stringify({ userID: user._id }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "success") {
+        console.log("Entries fetched successfully", data.entries);
+        setEntries(data.entries);
+      } else {
+        console.log("Error fetching entries");
+      }
+    };
 
     if (!user) {
       router.push("/auth/login");
@@ -137,23 +139,24 @@ export default function Dashboard() {
                 Recent entries
               </h1>
               {/* a list of entries */}
-              {rows.map((row, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-4 mt-4 shadow-md rounded-md p-4"
-                >
-                  <div className="flex flex-row justify-between">
-                    <p className="text-lg font-medium text-black">
-                      {row.title}
-                    </p>
+              {entries &&
+                entries.map((row, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col gap-4 mt-4 shadow-md rounded-md p-4"
+                  >
+                    <div className="flex flex-row justify-between">
+                      <p className="text-lg font-medium text-black">
+                        {row.type}
+                      </p>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      <h1 className="text-sm font-medium text-gray-600">
+                        {row.description}
+                      </h1>
+                    </div>
                   </div>
-                  <div className="flex flex-row justify-between">
-                    <h1 className="text-sm font-medium text-gray-600">
-                      {row.description}
-                    </h1>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
             <div className="flex flex-col md:w-1/2 md:pt-10 text-left justify-start items-start">
               <h1 className="text-xl font-bold text-black">Notes</h1>
