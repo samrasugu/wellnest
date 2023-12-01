@@ -71,7 +71,7 @@ export default function Notes() {
                 onClick={toggleSidebar}
               />
               <Link href="/addNote">
-                <button className="bg-sky-500 p-3 text-white rounded-lg">
+                <button className="bg-sky-500 p-2 text-white rounded-lg">
                   Add Note
                 </button>
               </Link>
@@ -85,12 +85,12 @@ export default function Notes() {
                 className="flex flex-col gap-4 mt-4 shadow-md p-4 rounded-md"
               >
                 <div className="flex flex-row justify-between">
-                  <h1 className="text-lg font-semibold text-black">
+                  <p className="text-lg font-medium text-black">
                     {row.title}
-                  </h1>
+                  </p>
                 </div>
                 <div className="flex flex-row justify-between">
-                  <h1 className="text-sm font-semibold text-gray-600">
+                  <h1 className="text-sm font-medium text-gray-600">
                     {row.description}
                   </h1>
                 </div>

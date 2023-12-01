@@ -8,6 +8,10 @@ import PrivateRoute from "../components/privateRoute";
 import { useAuth } from "@/utils/authContext";
 import router from "next/router";
 import { Menu } from "@mui/icons-material";
+import connectMongo from "@/utils/connectMongo";
+import { Note } from "@/models/Notes";
+import { NoteType, UserType } from "@/typing.t";
+import mongoose from "mongoose";
 
 const rows = [
   { _id: 1, title: "Snow", description: "Jon" },
@@ -21,14 +25,46 @@ const rows = [
   { id: 9, title: "Roxie", description: "Harvey" },
 ];
 
-export default function Dashboard() {
+type Props = {
+  notes: NoteType[];
+  user: UserType;
+};
+
+export default function Dashboard({ notes }: Props) {
   const { user } = useAuth();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [notesList, setNotes] = useState<NoteType[]>(notes);
+
   useEffect(() => {
+    const fetchNotes = async () => {
+      if (!user) {
+        return;
+      }
+      const response = await fetch("/api/notes/getNotes", {
+        method: "POST",
+        body: JSON.stringify({ userID: user._id }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "success") {
+        console.log("Notes fetched successfully", data.notes);
+        setNotes(data.notes);
+      } else {
+        console.log("Error fetching notes");
+      }
+    };
+
+    // fetch entries
+    const fetchEntries = async () => {};
+
     if (!user) {
       router.push("/auth/login");
+    } else {
+      fetchNotes();
+      fetchEntries();
     }
   }, [user]);
 
@@ -49,7 +85,7 @@ export default function Dashboard() {
         >
           <SideBar />
         </div>
-        <div className="flex flex-col md:w-[82%] w-screen md:pr-16 px-8 md:pt-16 pt-8 bg-white pb-8 ">
+        <div className="flex flex-col md:w-[82%] w-screen md:mr-16 px-8 md:pt-16 pt-8 bg-white pb-8">
           <div className="flex flex-row justify-between items-center">
             <h1 className="text-3xl font-semibold text-gray-800">
               Welcome, {user?.firstName}
@@ -65,7 +101,7 @@ export default function Dashboard() {
               Here&apos;s your progress for today
             </h1>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-16 gap-6 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 md:gap-10 gap-6 mt-4">
             <div className="flex flex-col p-6 justify-center items-left rounded-lg text-white h-32 bg-sky-500 shadow-md">
               <h2 className="flex flex-row gap-2 w-36 py-2">
                 <RunningIcon /> Steps
@@ -102,14 +138,17 @@ export default function Dashboard() {
               </h1>
               {/* a list of entries */}
               {rows.map((row, index) => (
-                <div key={index} className="flex flex-col gap-4 mt-4">
+                <div
+                  key={index}
+                  className="flex flex-col gap-4 mt-4 shadow-md rounded-md p-4"
+                >
                   <div className="flex flex-row justify-between">
-                    <h1 className="text-lg font-semibold text-black">
+                    <p className="text-lg font-medium text-black">
                       {row.title}
-                    </h1>
+                    </p>
                   </div>
                   <div className="flex flex-row justify-between">
-                    <h1 className="text-sm font-semibold text-gray-600">
+                    <h1 className="text-sm font-medium text-gray-600">
                       {row.description}
                     </h1>
                   </div>
@@ -119,22 +158,58 @@ export default function Dashboard() {
             <div className="flex flex-col md:w-1/2 md:pt-10 text-left justify-start items-start">
               <h1 className="text-xl font-bold text-black">Notes</h1>
               {/* a list of entries */}
-              {rows.map((row, index) => (
-                <div key={index} className="flex flex-col gap-4 mt-4">
-                  <div className="flex flex-row justify-between">
-                    <h1 className="text-lg font-semibold text-black">
-                      {row.title}
-                    </h1>
-                  </div>
-                  <div className="flex flex-row justify-between">
+              {notesList &&
+                notesList.map((row, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col gap-4 mt-4 shadow-md rounded-md p-4"
+                  >
+                    <div className="flex flex-row justify-between">
+                      <h1 className="text-lg font-medium text-black">
+                        {row.title}
+                      </h1>
+                    </div>
                     <h1 className="text-sm text-gray-600">{row.description}</h1>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context: { req: any }) {
+  try {
+    const { req } = context;
+    const user = req.user;
+
+    console.log("first", user);
+
+    const objectId = new mongoose.Types.ObjectId(user._id); // Convert to ObjectId
+
+    await connectMongo();
+
+    const notes = await Note.find({ userID: user._id }).exec();
+
+    // Additional logic to fetch entries
+
+    return {
+      props: {
+        user,
+        notes: JSON.parse(JSON.stringify(notes)),
+        entries: [], // Add your logic to fetch entries here
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      props: {
+        user: null,
+        notes: [],
+        entries: [],
+      },
+    };
+  }
 }

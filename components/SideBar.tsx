@@ -38,15 +38,15 @@ export const SideBar = () => {
       ),
       navto: "/notes",
     },
-    {
-      id: 4,
-      child: (
-        <>
-          <CalendarTodayIcon /> Calendar
-        </>
-      ),
-      navto: "/calendar",
-    },
+    // {
+    //   id: 4,
+    //   child: (
+    //     <>
+    //       <CalendarTodayIcon /> Calendar
+    //     </>
+    //   ),
+    //   navto: "/calendar",
+    // },
     {
       id: 5,
       child: (
@@ -76,7 +76,7 @@ export const SideBar = () => {
               <Link key={linkL.id} href={linkL.navto}>
                 <li
                   key={linkL.id}
-                  className="hover:bg-green-primary flex flex-row gap-2 items-center hover:text-sky-500 text-green-primary font-extrabold cursor-pointer py-3 rounded-lg px-2"
+                  className="hover:bg-green-primary flex flex-row gap-2 items-center hover:text-sky-500 text-green-primary font-medium cursor-pointer py-3 rounded-lg px-2"
                 >
                   {linkL.child}
                 </li>
