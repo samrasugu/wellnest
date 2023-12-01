@@ -1,35 +1,47 @@
 import { SideBar } from "@/components/SideBar";
 import Head from "next/head";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import PrivateRoute from "../components/privateRoute";
 import { Menu } from "@mui/icons-material";
-import connectMongo from "@/utils/connectMongo";
-import { Note } from "@/models/Notes";
-import { NoteType } from "@/typing.t";
-
-const rows = [
-  { _id: 1, title: "Snow", description: "Jon" },
-  { _id: 2, title: "Lannister", description: "Cersei" },
-  { _id: 3, title: "Lannister", description: "Jaime" },
-  { _id: 4, title: "Stark", description: "Arya" },
-  { _id: 5, title: "Targaryen", description: "Daenerys" },
-  { id: 6, title: "Melisandre", description: null },
-  { id: 7, title: "Clifford", description: "Ferrara" },
-  { id: 8, title: "Frances", description: "Rossini" },
-  { id: 9, title: "Roxie", description: "Harvey" },
-];
+import { NoteType, UserType } from "@/typing.t";
+import { useAuth } from "@/utils/authContext";
 
 type Props = {
   notes: NoteType[];
+  user: UserType;
 };
 
-export default function Notes({ notes }: Props) {
+export default function Notes() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+  const [notes, setNotes] = React.useState<NoteType[]>();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const { user } = useAuth();
+
+  // fetch notes
+  useEffect(() => {
+    const fetchNotes = async () => {
+      const response = await fetch("/api/notes/getNotes", {
+        method: "POST",
+        body: JSON.stringify({ userID: user._id }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "success") {
+        console.log("Notes fetched successfully", data.notes);
+        setNotes(data.notes);
+      } else {
+        console.log("Error fetching notes");
+      }
+    };
+
+    fetchNotes();
+  }, [user._id]);
 
   return (
     <PrivateRoute>
@@ -63,35 +75,46 @@ export default function Notes({ notes }: Props) {
             </div>
           </div>
           {/* a list of note entries */}
-          {notes.map((row, index) => (
-            <div key={index} className="flex flex-col gap-4 mt-4">
-              <div className="flex flex-row justify-between">
-                <h1 className="text-lg font-semibold text-black">
-                  {row.title}
-                </h1>
+          {notes &&
+            notes?.map((row, index) => (
+              <div
+                key={index}
+                className="flex flex-col gap-4 mt-4 shadow-md p-4 rounded-md"
+              >
+                <div className="flex flex-row justify-between">
+                  <h1 className="text-lg font-semibold text-black">
+                    {row.title}
+                  </h1>
+                </div>
+                <div className="flex flex-row justify-between">
+                  <h1 className="text-sm font-semibold text-gray-600">
+                    {row.description}
+                  </h1>
+                </div>
               </div>
-              <div className="flex flex-row justify-between">
-                <h1 className="text-sm font-semibold text-gray-600">
-                  {row.description}
-                </h1>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </PrivateRoute>
   );
 }
 
-// fetch notes from db
-export const getServerSideProps = async () => {
-  await connectMongo();
+// // fetch notes from db
+// export const getServerSideProps = async (context: any) => {
+//   // get userid from session
+//   const { req } = context;
 
-  const notes = await Note.find({});
+//   const user = await req.user;
 
-  return {
-    props: {
-      notes: JSON.parse(JSON.stringify(notes)),
-    },
-  };
-};
+//   await connectMongo();
+
+//   const notes = await Note.find({
+//     userID: user,
+//   });
+
+//   return {
+//     props: {
+//       notes: JSON.parse(JSON.stringify(notes)),
+//     },
+//   };
+// };

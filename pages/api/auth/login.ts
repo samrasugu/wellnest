@@ -37,6 +37,7 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          _id: user._id,
         },
       });
     }

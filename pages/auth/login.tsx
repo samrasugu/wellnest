@@ -43,8 +43,8 @@ export default function Login() {
 
       if (data.message === "success") {
         console.log("User logged in successfully", data.user);
-        const { firstName, lastName, email } = data.user;
-        login({ firstName, lastName, email });
+        const { firstName, lastName, email, _id } = data.user;
+        login({ firstName, lastName, email, _id });
         setLoginError("");
         setSigningIn(false);
         // Redirect the user to the desired page after login

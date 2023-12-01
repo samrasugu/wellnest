@@ -1,5 +1,6 @@
 import { SideBar } from "@/components/SideBar";
 import PrivateRoute from "@/components/privateRoute";
+import { useAuth } from "@/utils/authContext";
 import { Menu } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import Head from "next/head";
@@ -18,6 +19,8 @@ export default function AddNote() {
 
   const router = useRouter();
 
+  const {user} = useAuth();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -30,7 +33,7 @@ export default function AddNote() {
     try {
       const response = await fetch("/api/notes/addNote", {
         method: "POST",
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ title, description, userId: user._id }),
       });
 
       const data = await response.json();
