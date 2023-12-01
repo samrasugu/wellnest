@@ -25,6 +25,9 @@ export default function Notes() {
   // fetch notes
   useEffect(() => {
     const fetchNotes = async () => {
+      if (!user) {
+        return;
+      }
       const response = await fetch("/api/notes/getNotes", {
         method: "POST",
         body: JSON.stringify({ userID: user._id }),
@@ -41,12 +44,12 @@ export default function Notes() {
     };
 
     fetchNotes();
-  }, [user._id]);
+  }, [user]);
 
   return (
     <PrivateRoute>
       <Head>
-        <title>Home | WellNest</title>
+        <title>Notes | WellNest</title>
       </Head>
       <div className="flex flex-row">
         <div

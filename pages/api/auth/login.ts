@@ -6,16 +6,12 @@ import { AuthProvider } from "@/utils/authContext";
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   try {
-    console.log(req.body);
     const { email, password } = JSON.parse(req.body);
 
     await connectMongo();
     const user = await User.findOne({
       email: email,
     });
-
-    console.log("found user");
-    console.log(password);
 
     if (!user) {
       return res.status(404).json({
