@@ -32,27 +32,6 @@ export default function Login() {
     }
 
     setSigningIn(true);
-    // await fetch("/api/auth/login", {
-    //   method: "POST",
-    //   body: JSON.stringify({ email, password }),
-    // })
-    //   .then((res) => {
-    //     return res.json();
-    //   })
-    //   .then(async (data) => {
-    //     console.log(data);
-    //     if (data.message == "success") {
-    //       console.log("User logged in successfully" + data.user);
-    //       const { firstName, lastName, email } = data.user;
-    //       await login({ firstName, lastName, email });
-    //       setLoginError("");
-    //       setSigningIn(false);
-    //       // router.replace("/");
-    //     } else {
-    //       setLoginError(data.message);
-    //       setSigningIn(false);
-    //     }
-    //   });
 
     try {
       const response = await fetch("/api/auth/login", {

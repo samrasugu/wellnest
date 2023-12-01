@@ -65,7 +65,7 @@ export const SideBar = () => {
     logout();
   };
   return (
-    <div className="flex flex-col p-4 justify-between fixed w-60 h-screen bg-white border-r-2">
+    <div className="flex flex-col p-4 justify-between fixed w-60 h-screen bg-white border-r-2 pb-16">
       <div className="px-2">
         <h1 className="text-sky-500 font-bold text-4xl md:pb-2 pb-8 md:pt-10">
           WellNest

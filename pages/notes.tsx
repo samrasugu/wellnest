@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import PrivateRoute from "../components/privateRoute";
+import { Menu } from "@mui/icons-material";
 
 const rows = [
   { _id: 1, title: "Snow", description: "Jon" },
@@ -17,25 +18,42 @@ const rows = [
 ];
 
 export default function Notes() {
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <PrivateRoute>
       <Head>
         <title>Home | WellNest</title>
       </Head>
       <div className="flex flex-row">
-        <div className="flex h-screen md:w-[18%]">
+        <div
+          className={`md:flex h-screen md:w-[18%] ${
+            isSidebarOpen ? "flex" : "hidden"
+          } duration-500`}
+        >
           <SideBar />
         </div>
-        <div className="flex flex-col md:w-[82%] pr-16 pt-16 bg-white pb-8">
+        <div className="flex flex-col md:w-[82%] w-screen px-8 md:px-0 md:pr-16 pt-16 bg-white pb-8">
           <div className="flex flex-row justify-between">
             <h1 className="text-xl font-semibold text-gray-600">
               Recent notes
             </h1>
-            <Link href="/addnote">
-              <button className="bg-sky-500 p-3 text-white rounded-lg">
-                Add Note
-              </button>
-            </Link>
+
+            <div className="flex flex-col gap-4 justify-end items-end">
+              <Menu
+                className="ml-4 font-bold md:hidden flex"
+                onClick={toggleSidebar}
+              />
+              <Link href="/addNote">
+                <button className="bg-sky-500 p-3 text-white rounded-lg">
+                  Add Note
+                </button>
+              </Link>
+            </div>
           </div>
           {/* a list of entries */}
           {rows.map((row, index) => (
