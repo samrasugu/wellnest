@@ -9,7 +9,7 @@ First, clone the repository to your local machine:
 ```
 git clone https://github.com/samrasugu/wellnest.git
 ```
-Create an `env.local` file at the root directory of the project and add a valid `MongoDB` connection string.
+Create an `env.local` file at the root directory of the project and add a valid `MongoDB` connection string to a variable `MONGODB_URL`.
 
 Run `npm install` or `yarn add` on your terminal in the root directory of the project.
 
