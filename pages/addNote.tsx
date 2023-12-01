@@ -4,6 +4,7 @@ import { Menu } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 export default function AddNote() {
@@ -14,9 +15,37 @@ export default function AddNote() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   const [addNoteError, setAddNoteError] = React.useState("");
+
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submitting form");
+
+    if (!title || !description) {
+      return;
+    }
+
+    setAddingNote(true);
+
+    try {
+      const response = await fetch("/api/notes/addNote", {
+        method: "POST",
+        body: JSON.stringify({ title, description }),
+      });
+
+      const data = await response.json();
+
+      if (data.message === "success") {
+        console.log("Note added successfully", data.note);
+        setAddNoteError("");
+        setAddingNote(false);
+        // Redirect the user to the desired page after login
+        router.replace("/notes");
+      } else {
+        setAddNoteError(data.message);
+        setAddingNote(false);
+      }
+    } catch (error) {}
   };
 
   const toggleSidebar = () => {
@@ -61,7 +90,7 @@ export default function AddNote() {
               />
 
               {addingNote ? (
-                <CircularProgress />
+                <CircularProgress className="m-4" />
               ) : (
                 <button
                   type="submit"

@@ -4,6 +4,9 @@ import Link from "next/link";
 import React from "react";
 import PrivateRoute from "../components/privateRoute";
 import { Menu } from "@mui/icons-material";
+import connectMongo from "@/utils/connectMongo";
+import { Note } from "@/models/Notes";
+import { NoteType } from "@/typing.t";
 
 const rows = [
   { _id: 1, title: "Snow", description: "Jon" },
@@ -17,7 +20,11 @@ const rows = [
   { id: 9, title: "Roxie", description: "Harvey" },
 ];
 
-export default function Notes() {
+type Props = {
+  notes: NoteType[];
+};
+
+export default function Notes({ notes }: Props) {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   const toggleSidebar = () => {
@@ -55,8 +62,8 @@ export default function Notes() {
               </Link>
             </div>
           </div>
-          {/* a list of entries */}
-          {rows.map((row, index) => (
+          {/* a list of note entries */}
+          {notes.map((row, index) => (
             <div key={index} className="flex flex-col gap-4 mt-4">
               <div className="flex flex-row justify-between">
                 <h1 className="text-lg font-semibold text-black">
@@ -75,3 +82,16 @@ export default function Notes() {
     </PrivateRoute>
   );
 }
+
+// fetch notes from db
+export const getServerSideProps = async () => {
+  await connectMongo();
+
+  const notes = await Note.find({});
+
+  return {
+    props: {
+      notes: JSON.parse(JSON.stringify(notes)),
+    },
+  };
+};
