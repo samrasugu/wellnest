@@ -59,7 +59,7 @@ export const SideBar = () => {
   ];
 
   const router = useRouter();
-    const { logout } = useAuth();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -76,7 +76,11 @@ export const SideBar = () => {
               <Link key={linkL.id} href={linkL.navto}>
                 <li
                   key={linkL.id}
-                  className="hover:bg-green-primary flex flex-row gap-2 items-center hover:text-sky-500 text-green-primary font-medium cursor-pointer py-3 rounded-lg px-2"
+                  className={`${
+                    router.pathname === linkL.navto
+                      ? "bg-sky-500 text-white hover:bg-white hover:text-sky-500 border hover:border-sky-500"
+                      : "bg-white"
+                  } flex flex-row gap-2 items-center hover:text-sky-500 text-green-primary font-medium cursor-pointer py-3 rounded-lg px-2`}
                 >
                   {linkL.child}
                 </li>
@@ -86,11 +90,11 @@ export const SideBar = () => {
         </div>
       </div>
 
-      <div className="justify-start items-center">
+      <div className="flex flex-row justify-start items-center">
         {/* logout button */}
         <div
           onClick={handleLogout}
-          className="text-green-primary justify-center hover:text-red-500 hover:bg-green-primary cursor-pointer font-extrabold py-3 px-3 rounded-lg"
+          className="flex text-green-primary items-center gap-2 justify-center hover:text-red-500 hover:bg-green-primary cursor-pointer font-extrabold py-3 px-3 rounded-lg"
         >
           <LogoutIcon /> Logout
         </div>
