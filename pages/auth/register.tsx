@@ -6,6 +6,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Link from "next/link";
 import { CircularProgress } from "@mui/material";
+import { useAuth } from "@/utils/authContext";
 
 interface IformInputs {
   firstName: string;
@@ -44,6 +45,8 @@ export default function Register() {
     },
   });
 
+  const { login } = useAuth();
+
   const onSubmit: SubmitHandler<IformInputs> = async (data: IformInputs, e) => {
     e?.preventDefault();
 
@@ -59,9 +62,14 @@ export default function Register() {
       .then((data) => {
         console.log(data);
         if (data.message == "success") {
+          const { firstName, lastName, email, _id } = data.user;
+          login({ firstName, lastName, email, _id });
           setSigningUp(false);
           setSubmitted(true);
-          setRegistrationError('');
+          setRegistrationError("");
+          setTimeout(() => {
+            router.replace("/");
+          }, 3000);
         } else {
           setRegistrationError(data.message);
           setSigningUp(false);
@@ -94,11 +102,12 @@ export default function Register() {
             Register
           </h2>
           {submitted ? (
-            <div className="flex flex-col px-10 py-10 my-10 bluebackground text-green-primary max-w-2xl mx-auto">
+            <div className="flex flex-col px-10 py-10 my-10 justify-center items-center text-green-primary max-w-2xl mx-auto">
               <h2 className="text-2xl font-bold">Thank you for registering</h2>
-              <p className="text-xl font-medium">
-                Email verification link sent to your email inbox
+              <p className="text-xl font-medium py-2">
+                Logging you in automatically...
               </p>
+              <CircularProgress />
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>

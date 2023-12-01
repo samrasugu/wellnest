@@ -8,7 +8,6 @@ export default async function register(
   res: NextApiResponse
 ) {
   try {
-    console.log(req.body);
     const { firstName, lastName, email, password } = JSON.parse(req.body);
 
     await connectMongo();
@@ -28,6 +27,7 @@ export default async function register(
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        _id: user._id,
       },
     });
   } catch (error: any) {
