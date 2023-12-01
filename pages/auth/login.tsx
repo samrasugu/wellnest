@@ -58,7 +58,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Agrofi | Login</title>
+        <title>WellNest | Login</title>
       </Head>
       <div className="flex flex-col w-screen h-screen justify-center items-center bg-gradient-to-r from-sky-500 to-indigo-500">
         <h1 className="text-white font-bold text-3xl md:pb-2 pb-8">WellNest</h1>
